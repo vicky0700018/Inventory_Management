@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Products - Inventory Management{% endblock %}
+
+{% block content %}
+<div class="row mt-4 mb-4">
+    <div class="col-md-8">
+        <h1>📋 Inventory Dashboard</h1>
+        <p class="text-muted">Browse all available products</p>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if user.is_authenticated %}
+            <a href="{% url 'create_product' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus"></i> Add New Product
+            </a>
+        {% else %}
+            <div class="alert alert-info">
+                <a href="{% url 'login' %}" class="alert-link">Login</a> or 
+                <a href="{% url 'register' %}" class="alert-link">Register</a> to create products
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if products %}
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4 col-sm-6 mb-4">
+        <div class="card product-card">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top product-image">
+            {% else %}
+            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                <span>No Image</span>
+            </div>
+            {% endif %}
+            
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text text-muted">{{ product.description|truncatewords:15 }}</p>
+                
+                <div class="mb-2">
+                    <span class="badge bg-primary">₹{{ product.price }}</span>
+                    {% if product.quantity > 0 %}
+                        <span class="badge bg-success">Stock: {{ product.quantity }}</span>
+                    {% else %}
+                        <span class="badge bg-danger">Out of Stock</span>
+                    {% endif %}
+                </div>
+                
+                <small class="text-muted d-block mb-3">
+                    By: <strong>{{ product.created_by.username }}</strong><br>
+                    Created: {{ product.created_at|date:"d M Y" }}
+                </small>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-info btn-sm">
+                        👁️ View Details
+                    </a>
+                    
+                    {% if user.is_authenticated and user == product.created_by %}
+                    <div class="btn-group" role="group">
+                        <a href="{% url 'edit_product' product.pk %}" class="btn btn-warning btn-sm">
+                            ✏️ Edit
+                        </a>
+                        <form method="POST" action="{% url 'delete_product' product.pk %}" style="flex: 1;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm w-100" onclick="return confirm('Are you sure?')">
+                                🗑️ Delete
+                            </button>
+                        </form>
+                    </div>
+                    {% elif not user.is_authenticated %}
+                    <div class="btn-group permission-denied" role="group" title="Login to edit/delete">
+                        <button class="btn btn-warning btn-sm" disabled>✏️ Edit</button>
+                        <button class="btn btn-danger btn-sm" disabled>🗑️ Delete</button>
+                    </div>
+                    {% else %}
+                    <div class="btn-group permission-denied" role="group" title="Only owner can edit/delete">
+                        <button class="btn btn-warning btn-sm" disabled>✏️ Edit</button>
+                        <button class="btn btn-danger btn-sm" disabled>🗑️ Delete</button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-warning text-center" role="alert">
+    <h4 class="alert-heading">No Products Found</h4>
+    <p>There are no products in the inventory yet.</p>
+    {% if user.is_authenticated %}
+        <a href="{% url 'create_product' %}" class="btn btn-primary">Create First Product</a>
+    {% else %}
+        <p>
+            <a href="{% url 'register' %}" class="btn btn-primary">Register</a> or 
+            <a href="{% url 'login' %}" class="btn btn-secondary">Login</a> to add products
+        </p>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Account - Inventory Management{% endblock %}
+
+{% block content %}
+<div class="row mt-5 mb-5">
+    <div class="col-md-6 offset-md-3">
+        <div class="card border-0 shadow" style="border-left: 4px solid #d9534f;">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4" style="color: #d9534f;">⚠️ Delete Account</h2>
+                
+                <div class="alert alert-danger" role="alert">
+                    <h5 class="alert-heading">This action cannot be undone!</h5>
+                    <p>Deleting your account will:</p>
+                    <ul class="mb-0">
+                        <li>Permanently delete your account</li>
+                        <li>Remove all your products</li>
+                        <li>Delete all your data</li>
+                        <li>Cannot be recovered</li>
+                    </ul>
+                </div>
+                
+                <p style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    A confirmation email will be sent to <strong>{{ user.email }}</strong>. 
+                    You must click the link in the email to complete the deletion.
+                </p>
+                
+                <form method="POST" action="{% url 'request_deletion' %}">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Type your username to confirm:</strong></label>
+                        <input type="text" class="form-control" placeholder="{{ user.username }}" id="confirm_username">
+                        <small class="form-text text-muted">
+                            This prevents accidental deletion. Type exactly: <code>{{ user.username }}</code>
+                        </small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="confirm_check">
+                            <label class="form-check-label" for="confirm_check">
+                                I understand that this action is permanent and all my data will be deleted.
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger btn-lg" id="delete_btn" disabled>
+                            🗑️ Delete My Account
+                        </button>
+                        <a href="{% url 'product_list' %}" class="btn btn-secondary btn-lg">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <p class="text-center text-muted small">
+                    Need help? <a href="mailto:{{ EMAIL_HOST_USER }}">Contact support</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const confirmUsername = document.getElementById('confirm_username');
+    const confirmCheck = document.getElementById('confirm_check');
+    const deleteBtn = document.getElementById('delete_btn');
+    const expectedUsername = '{{ user.username }}';
+    
+    function updateButtonState() {
+        const usernameMatch = confirmUsername.value.trim() === expectedUsername;
+        const checkboxChecked = confirmCheck.checked;
+        deleteBtn.disabled = !(usernameMatch && checkboxChecked);
+    }
+    
+    confirmUsername.addEventListener('input', updateButtonState);
+    confirmCheck.addEventListener('change', updateButtonState);
+</script>
+{% endblock %}

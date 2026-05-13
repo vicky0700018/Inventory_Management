@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - Inventory Management{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-6">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded">
+        {% else %}
+        <div class="bg-secondary text-white d-flex align-items-center justify-content-center rounded" style="height: 400px;">
+            <span>No Image Available</span>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-6">
+        <h1>{{ product.name }}</h1>
+        
+        <div class="mb-4">
+            <span class="badge bg-primary" style="font-size: 1.2rem; padding: 0.5rem 1rem;">
+                Price: ₹{{ product.price }}
+            </span>
+            {% if product.quantity > 0 %}
+                <span class="badge bg-success" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                    Available: {{ product.quantity }} units
+                </span>
+            {% else %}
+                <span class="badge bg-danger" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                    Out of Stock
+                </span>
+            {% endif %}
+        </div>
+        
+        <div class="mb-4">
+            <h5>Description</h5>
+            <p class="lead">{{ product.description }}</p>
+        </div>
+        
+        <div class="mb-4">
+            <h6>Product Information</h6>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Created By:</strong> {{ product.created_by.username }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Created At:</strong> {{ product.created_at|date:"d M Y H:i" }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Last Updated:</strong> {{ product.updated_at|date:"d M Y H:i" }}
+                </li>
+            </ul>
+        </div>
+        
+        <div class="mb-4">
+            {% if user.is_authenticated and user == product.created_by %}
+            <div class="btn-group" role="group" style="width: 100%;">
+                <a href="{% url 'edit_product' product.pk %}" class="btn btn-warning btn-lg flex-grow-1">
+                    ✏️ Edit Product
+                </a>
+                <form method="POST" action="{% url 'delete_product' product.pk %}" style="flex: 1;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-lg w-100" onclick="return confirm('Are you sure you want to delete this product?')">
+                        🗑️ Delete Product
+                    </button>
+                </form>
+            </div>
+            {% elif not user.is_authenticated %}
+            <p class="alert alert-info">
+                <a href="{% url 'login' %}">Login</a> to edit or delete this product.
+            </p>
+            {% else %}
+            <p class="alert alert-warning">
+                Only the product owner can edit or delete this product.
+            </p>
+            {% endif %}
+        </div>
+        
+        <a href="{% url 'product_list' %}" class="btn btn-secondary btn-lg">
+            ← Back to Products
+        </a>
+    </div>
+</div>
+{% endblock %}
