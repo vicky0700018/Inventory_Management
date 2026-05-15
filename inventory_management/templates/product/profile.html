@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - Inventory Management{% endblock %}
+
+{% block content %}
+<style>
+    .profile-container {
+        min-height: 80vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 40px 20px;
+    }
+    
+    .profile-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .profile-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+    
+    .profile-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 40px;
+        text-align: center;
+        color: white;
+        position: relative;
+    }
+    
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 60px;
+        border: 4px solid white;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .profile-header h2 {
+        font-size: 28px;
+        margin: 0 0 10px 0;
+        font-weight: 800;
+    }
+    
+    .profile-header p {
+        margin: 5px 0;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+    
+    .profile-body {
+        padding: 40px;
+    }
+    
+    .profile-section {
+        margin-bottom: 30px;
+    }
+    
+    .profile-section h4 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #667eea;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: #667eea;
+        min-width: 120px;
+    }
+    
+    .info-value {
+        color: #333;
+        font-weight: 500;
+        word-break: break-all;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        border: 2px solid #667eea;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 32px;
+        font-weight: 800;
+        color: #667eea;
+        margin-bottom: 5px;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+        color: #666;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .btn-action {
+        flex: 1;
+        min-width: 150px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .btn-primary-action {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-primary-action:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-secondary-action {
+        background: #f0f4ff;
+        color: #667eea;
+        border: 2px solid #667eea;
+    }
+    
+    .btn-secondary-action:hover {
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-danger-action {
+        background: #ff6b6b;
+        color: white;
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    }
+    
+    .btn-danger-action:hover {
+        background: #ff5252;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.6);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .divider {
+        border-top: 2px solid #e0e0e0;
+        margin: 30px 0;
+    }
+    
+    .back-button {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 10px 20px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 2px solid white;
+    }
+    
+    .back-button:hover {
+        background: white;
+        color: #667eea;
+        text-decoration: none;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 5px 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+    
+    @media (max-width: 600px) {
+        .profile-header {
+            padding: 30px 20px;
+        }
+        
+        .profile-body {
+            padding: 20px;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .info-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .info-value {
+            margin-top: 8px;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-content">
+        <!-- Back Button -->
+        <a href="{% url 'product_list' %}" class="back-button">
+            ← Back to Products
+        </a>
+        
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <!-- Header -->
+            <div class="profile-header">
+                <div class="profile-avatar">👤</div>
+                <h2>{{ user.username }}</h2>
+                <p>Member since {{ user.date_joined|date:"F d, Y" }}</p>
+                <span class="badge">Active User</span>
+            </div>
+            
+            <!-- Body -->
+            <div class="profile-body">
+                <!-- Account Information Section -->
+                <div class="profile-section">
+                    <h4>ℹ️ Account Information</h4>
+                    
+                    <div class="info-row">
+                        <span class="info-label">👤 Username</span>
+                        <span class="info-value">{{ user.username }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">📧 Email</span>
+                        <span class="info-value">{{ user.email }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">📅 First Name</span>
+                        <span class="info-value">{{ user.first_name|default:"Not set" }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">📅 Last Name</span>
+                        <span class="info-value">{{ user.last_name|default:"Not set" }}</span>
+                    </div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <!-- Statistics Section -->
+                <div class="profile-section">
+                    <h4>📊 Your Statistics</h4>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">{{ products_count }}</div>
+                            <div class="stat-label">Total Products</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">{{ user.date_joined|date:"Y" }}</div>
+                            <div class="stat-label">Member Since</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <!-- Account Settings Section -->
+                <div class="profile-section">
+                    <h4>⚙️ Account Actions</h4>
+                    
+                    <div class="action-buttons">
+                        <a href="{% url 'create_product' %}" class="btn-action btn-primary-action">
+                            ➕ Add New Product
+                        </a>
+                        <a href="{% url 'product_list' %}" class="btn-action btn-secondary-action">
+                            📋 View All Products
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <!-- Danger Zone Section -->
+                <div class="profile-section">
+                    <h4 style="color: #ff6b6b;">⚠️ Danger Zone</h4>
+                    
+                    <div style="background: #ffe0e0; padding: 15px; border-radius: 8px; border-left: 4px solid #ff6b6b; margin-bottom: 15px;">
+                        <p style="color: #d32f2f; margin: 0; font-weight: 600;">
+                            ⚠️ Deleting your account is permanent and cannot be undone. All your products will be deleted.
+                        </p>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <form method="POST" action="{% url 'request_deletion' %}" style="flex: 1;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-action btn-danger-action" style="width: 100%;">
+                                🗑️ Delete Account
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Logout Button -->
+        <div style="text-align: center;">
+            <a href="{% url 'logout' %}" class="btn-action btn-secondary-action" style="max-width: 250px;">
+                🚪 Logout
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
