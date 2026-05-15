@@ -4,7 +4,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from django.conf import settings
+from django.utils.html import strip_tags
 from .models import Product, AccountDeletion
 from .forms import ProductForm, UserRegistrationForm
 
@@ -82,7 +84,31 @@ def register(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            messages.success(request, 'Registration successful! Welcome email has been sent to your email.')
+            
+            # Send Welcome Email
+            try:
+                context = {
+                    'username': user.username,
+                    'email': user.email,
+                    'site_url': request.build_absolute_uri('/'),
+                    'image_url': request.build_absolute_uri('/static/images/inventory-welcome.png'),  # Optional: Add your image
+                }
+                html_message = render_to_string('product/welcome_email.html', context)
+                plain_message = strip_tags(html_message)
+                
+                send_mail(
+                    subject='Welcome to Inventory Management System!',
+                    message=plain_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    html_message=html_message,
+                    fail_silently=False,
+                )
+                messages.success(request, 'Registration successful! Welcome email has been sent to your email.')
+            except Exception as e:
+                # If email fails, still allow registration but show warning
+                messages.warning(request, f'Registration successful! But email could not be sent. Error: {str(e)}')
+            
             login(request, user)
             return redirect('product_list')
     else:
@@ -110,6 +136,17 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'You have been logged out successfully.')
     return redirect('product_list')
+
+# User Profile View
+@login_required(login_url='login')
+def profile_view(request):
+    user = request.user
+    user_products = Product.objects.filter(created_by=user).count()
+    context = {
+        'user': user,
+        'products_count': user_products,
+    }
+    return render(request, 'product/profile.html', context)
 
 # Request Account Deletion
 @login_required(login_url='login')
