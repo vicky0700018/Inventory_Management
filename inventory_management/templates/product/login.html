@@ -3,49 +3,334 @@
 {% block title %}Login - Inventory Management{% endblock %}
 
 {% block content %}
-<div class="row mt-5 mb-5">
-    <div class="col-md-6 offset-md-3">
-        <div class="card border-0 shadow">
-            <div class="card-body p-5">
-                <h2 class="text-center mb-4">🔐 Login</h2>
-                
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                
-                <form method="POST">
-                    {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username *</label>
-                        <input type="text" class="form-control" id="username" name="username" required placeholder="Enter your username">
+<style>
+    .login-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+    }
+    
+    .login-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        max-width: 450px;
+        width: 100%;
+        border: none;
+    }
+    
+    .login-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 40px 20px;
+        text-align: center;
+        color: white;
+    }
+    
+    .login-header h2 {
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .login-body {
+        padding: 40px 30px;
+    }
+    
+    .alert {
+        border-radius: 10px;
+        border: none;
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+    
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .alert-warning {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-label {
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 14px;
+        display: block;
+    }
+    
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 12px 15px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background-color: #f9f9f9;
+    }
+    
+    .form-control:focus {
+        background-color: #fff;
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+        outline: none;
+    }
+    
+    .form-control::placeholder {
+        color: #999;
+    }
+    
+    .btn-login {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 14px 20px;
+        font-weight: 700;
+        font-size: 16px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        color: white;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+        color: white;
+    }
+    
+    .btn-login:active {
+        transform: translateY(-1px);
+    }
+    
+    .divider {
+        text-align: center;
+        margin: 30px 0;
+        position: relative;
+    }
+    
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: #e0e0e0;
+    }
+    
+    .divider-text {
+        background: white;
+        padding: 0 10px;
+        position: relative;
+        color: #999;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .register-link {
+        text-align: center;
+        font-size: 14px;
+    }
+    
+    .register-link a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.3s ease;
+    }
+    
+    .register-link a:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+    
+    .tab-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+        border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .tab-btn {
+        flex: 1;
+        padding: 10px;
+        background: none;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        color: #999;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+    
+    .tab-btn.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+    }
+    
+    .tab-btn:hover:not(.active) {
+        color: #333;
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .input-icon {
+        position: relative;
+    }
+    
+    .input-icon::before {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+        font-size: 14px;
+    }
+    
+    .input-icon input {
+        padding-left: 40px;
+    }
+    
+    @media (max-width: 500px) {
+        .login-body {
+            padding: 20px;
+        }
+        
+        .login-header {
+            padding: 30px 20px;
+        }
+        
+        .login-header h2 {
+            font-size: 24px;
+        }
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <!-- Header -->
+        <div class="login-header">
+            <h2>🔐 Login</h2>
+        </div>
+        
+        <!-- Body -->
+        <div class="login-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password *</label>
-                        <input type="password" class="form-control" id="password" name="password" required placeholder="Enter your password">
-                    </div>
-                    
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            ✅ Login
-                        </button>
-                    </div>
-                </form>
-                
-                <hr class="my-4">
-                
-                <p class="text-center">
-                    Don't have an account?
-                    <a href="{% url 'register' %}" class="link-primary">Register here</a>
-                </p>
+                {% endfor %}
+            {% endif %}
+            
+            <!-- Tab Navigation -->
+            <div class="tab-container">
+                <button class="tab-btn active" data-tab="username-tab">👤 Username</button>
+                <button class="tab-btn" data-tab="email-tab">📧 Email</button>
             </div>
+            
+            <!-- Form -->
+            <form method="POST" id="loginForm">
+                {% csrf_token %}
+                
+                <!-- Username Tab -->
+                <div id="username-tab" class="tab-content active">
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username *</label>
+                        <div class="input-icon" style="position: relative;">
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">🔒 Password *</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+                </div>
+                
+                <!-- Email Tab -->
+                <div id="email-tab" class="tab-content">
+                    <div class="form-group">
+                        <label for="email-login" class="form-label">📧 Email *</label>
+                        <input type="email" class="form-control" id="email-login" placeholder="Enter your email" disabled>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password-email" class="form-label">🔒 Password *</label>
+                        <input type="password" class="form-control" id="password-email" placeholder="Enter your password" disabled>
+                    </div>
+                    
+                    <div class="alert alert-info" style="margin-bottom: 20px;">
+                        ℹ️ Email login currently not available. Please use Username to login.
+                    </div>
+                </div>
+                
+                <!-- Login Button -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-login btn-lg">
+                        ✅ Login
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Divider -->
+            <div class="divider">
+                <span class="divider-text">OR</span>
+            </div>
+            
+            <!-- Register Link -->
+            <p class="register-link">
+                Don't have an account? <a href="{% url 'register' %}">Register here</a>
+            </p>
         </div>
     </div>
 </div>
+
+<script>
+    // Tab switching functionality
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabId = this.dataset.tab;
+            
+            // Remove active class from all
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            // Add active class to clicked btn and corresponding content
+            this.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+</script>
 {% endblock %}
