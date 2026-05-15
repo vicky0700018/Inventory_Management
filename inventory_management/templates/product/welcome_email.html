@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Inventory Management</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .email-container {
+            background-color: #ffffff;
+            max-width: 600px;
+            margin: 20px auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .gradient-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 20px;
+            text-align: center;
+            position: relative;
+        }
+        .gradient-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: white;
+            clip-path: polygon(0 10px, 100% 0, 100% 100%, 0 100%);
+        }
+        .gradient-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .gradient-header p {
+            font-size: 14px;
+            opacity: 0.95;
+            margin: 0;
+            font-weight: 600;
+        }
+        .logo {
+            font-size: 60px;
+            margin-bottom: 15px;
+            display: block;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 22px;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .welcome-message {
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.8;
+            font-size: 15px;
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+        .welcome-message p {
+            margin-bottom: 10px;
+        }
+        .welcome-message p:last-child {
+            margin-bottom: 0;
+        }
+        .feature-section {
+            background: linear-gradient(135deg, #f0f4ff 0%, #f5f1ff 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        }
+        .feature-section h6 {
+            color: #667eea;
+            margin-bottom: 18px;
+            font-size: 17px;
+            font-weight: 700;
+        }
+        .feature-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .feature-list li {
+            color: #555;
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+            font-weight: 500;
+        }
+        .feature-list li:before {
+            content: "✓";
+            color: #fff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .feature-list li:hover {
+            color: #667eea;
+            transform: translateX(5px);
+            transition: all 0.3s ease;
+        }
+        .user-info {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 2px solid #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        }
+        .user-info p {
+            color: #333;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .user-info p:last-child {
+            margin-bottom: 0;
+        }
+        .user-info .label-text {
+            color: #667eea;
+            font-weight: 700;
+        }
+        .user-info .value-text {
+            color: #764ba2;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
+            border: 3px solid #667eea;
+        }
+        .cta-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 45px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            display: inline-block;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            font-size: 16px;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+            color: white;
+            text-decoration: none;
+        }
+        .cta-button:active {
+            transform: translateY(-1px);
+        }
+        .next-steps {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border-left: 5px solid #ff9800;
+        }
+        .next-steps h6 {
+            color: #e65100;
+            margin-bottom: 18px;
+            font-size: 17px;
+            font-weight: 700;
+        }
+        .next-steps ol {
+            color: #e65100;
+            margin: 0;
+            padding-left: 25px;
+            font-weight: 500;
+        }
+        .next-steps li {
+            margin-bottom: 10px;
+        }
+        .divider {
+            border-top: 2px solid #e0e0e0;
+            margin: 25px 0;
+        }
+        .support-alert {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+            border-left: 5px solid #ffc107;
+            color: #856404;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+            font-weight: 500;
+        }
+        .support-alert strong {
+            color: #ff6f00;
+            font-size: 16px;
+        }
+        footer {
+            background: linear-gradient(135deg, #f5f5f5 0%, #efefef 100%);
+            padding: 30px;
+            text-align: center;
+            border-top: 3px solid #667eea;
+            color: #666;
+            font-size: 12px;
+        }
+        footer p {
+            margin-bottom: 10px;
+        }
+        footer p:last-child {
+            margin-bottom: 0;
+        }
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        footer a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        .badge-new {
+            display: inline-block;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+        @media (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                border-radius: 0;
+            }
+            .gradient-header {
+                padding: 30px 20px;
+            }
+            .content {
+                padding: 20px;
+            }
+            .greeting {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="gradient-header">
+            <span class="logo">📦</span>
+            <h1>Welcome to Inventory Management!</h1>
+            <p>✨ Your account has been successfully created ✨</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Greeting -->
+            <div class="greeting">
+                👋 Hello {{ username }},
+            </div>
+
+            <!-- Welcome Message -->
+            <div class="welcome-message">
+                <p>🎉 Welcome to our <strong>Inventory Management System</strong>! We're absolutely thrilled to have you on board.</p>
+                <p>Your account has been successfully created and you're now ready to start managing your inventory efficiently and professionally.</p>
+            </div>
+
+            <!-- Feature Section -->
+            <div class="feature-section">
+                <h6>🚀 What You Can Do Now:</h6>
+                <ul class="feature-list">
+                    <li>📝 Create and manage your products</li>
+                    <li>📊 Track inventory across categories</li>
+                    <li>🖼️ Upload product images and details</li>
+                    <li>✏️ Edit and update product information</li>
+                    <li>🗑️ Delete products when needed</li>
+                    <li>🌍 Access your products anytime, anywhere</li>
+                </ul>
+            </div>
+
+            <!-- User Information -->
+            <div class="user-info">
+                <p style="font-size: 17px;"><span class="label-text">👤 Account Details:</span></p>
+                <p>📧 Email: <span class="value-text">{{ email }}</span></p>
+                <p>👤 Username: <span class="value-text">{{ username }}</span></p>
+            </div>
+
+            <!-- Image Section -->
+            <div class="image-container">
+                {% if image_url %}
+                    <img src="{{ image_url }}" alt="Inventory Management System">
+                {% else %}
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 12px; color: white; font-size: 24px; font-weight: 700;">
+                        📊 Streamline Your Inventory Management
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Call to Action -->
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ site_url }}" class="cta-button">🚀 Start Managing Inventory</a>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Next Steps -->
+            <div class="next-steps">
+                <h6>📋 Next Steps:</h6>
+                <ol>
+                    <li>🔐 Log in to your account</li>
+                    <li>⚙️ Complete your profile settings</li>
+                    <li>➕ Add your first product</li>
+                    <li>📈 Start managing your inventory</li>
+                </ol>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Support Section -->
+            <div class="support-alert">
+                <p class="mb-0">
+                    <strong>❓ Need Help?</strong> If you have any questions or need assistance, please don't hesitate to reach out to our support team. We're here to help you succeed! 💪
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p style="font-weight: 700; color: #667eea;">© 2026 Inventory Management System. All rights reserved.</p>
+            <p>
+                <a href="{{ site_url }}">🌐 Visit Our Website</a> | 
+                <a href="mailto:vs2734514@gmail.com">📧 Contact Support</a>
+            </p>
+            <p style="color: #999; font-size: 11px;">This is an automated email. Please do not reply directly to this message.</p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
